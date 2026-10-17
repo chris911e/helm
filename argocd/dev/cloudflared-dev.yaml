@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/chris911e/helm.git
+    repoURL: git@github.com:chris911e/helm.git
     targetRevision: HEAD
     path: cloudflared
     helm:

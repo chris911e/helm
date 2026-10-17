@@ -1,0 +1,2 @@
+# Dev overrides (merged on top of values.yaml)
+replicaCount: 1

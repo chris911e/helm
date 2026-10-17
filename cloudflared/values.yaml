@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: cloudflare/cloudflared
+  tag: ""
+  pullPolicy: IfNotPresent
+
+tunnel:
+  secret: cloudflared-token
+  tokenKey: token
+
+metricsPort: 2000
+
+resources: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]

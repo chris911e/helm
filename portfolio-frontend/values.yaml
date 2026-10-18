@@ -3,7 +3,7 @@ revisionHistoryLimit: 2
 
 imagePullSecrets: []
 
-containerPort: 80
+containerPort: 8080
 
 service:
   type: ClusterIP

@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloudflared-dev
-  namespace: argocd
+  name: portfolio-frontend-dev
+  namespace: dev
 spec:
   project: default
   source:

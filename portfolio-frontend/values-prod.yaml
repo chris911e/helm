@@ -1,15 +1,6 @@
 # Prod overrides (merged on top of values.yaml)
 replicaCount: 2
 
-ingress:
-  enabled: true
-  className: nginx
-  hosts:
-    - host: piffels.ch
-      paths:
-        - path: /
-          pathType: Prefix
-
 resources:
   requests:
     cpu: 50m

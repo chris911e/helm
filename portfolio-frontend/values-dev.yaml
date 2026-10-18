@@ -5,11 +5,3 @@ image:
   tag: stable-alpine
   pullPolicy: Always
 
-ingress:
-  enabled: true
-  className: nginx
-  hosts:
-    - host: dev.piffels.ch
-      paths:
-        - path: /
-          pathType: Prefix

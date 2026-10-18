@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: portfolio-frontend-dev
-  namespace: dev
+  namespace: argocd
 spec:
   project: default
   source:

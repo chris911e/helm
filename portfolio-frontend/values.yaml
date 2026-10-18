@@ -1,9 +1,7 @@
 replicaCount: 1
 
-image:
-  repository: nginx
-  tag: stable-alpine
-  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
 
 containerPort: 80
 

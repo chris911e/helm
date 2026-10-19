@@ -6,7 +6,7 @@ metadata:
     {{- include "playit.labels" . | nindent 4 }}
 spec:
   # One agent per secret key: Recreate avoids two agents running at once
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
     type: Recreate

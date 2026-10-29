@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "playit.fullname" . }}
+  labels:
+    {{- include "playit.labels" . | nindent 4 }}
+spec:
+  # One agent per secret key: Recreate avoids two agents running at once
+  replicas: 0
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "playit.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "playit.selectorLabels" . | nindent 8 }}
+    spec:
+      hostNetwork: {{ .Values.hostNetwork }}
+      {{- if .Values.hostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      containers:
+        - name: {{ include "playit.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.agent.secret }}
+                  key: {{ .Values.agent.secretKeyKey }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

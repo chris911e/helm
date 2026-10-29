@@ -1,0 +1,69 @@
+revisionHistoryLimit: 2
+
+image:
+  repository: itzg/minecraft-server
+  tag: ""
+  pullPolicy: IfNotPresent
+
+env:
+  EULA: "TRUE"
+  TYPE: PAPER
+  VERSION: LATEST
+  MEMORY: 3072M
+  DIFFICULTY: normal
+  MODE: survival
+  MAX_PLAYERS: "2"
+  VIEW_DISTANCE: "10"
+  MOTD: Minecraft on Kubernetes
+  ONLINE_MODE: "TRUE"
+  OPS: ""
+  WHITELIST: ""
+
+rcon:
+  secret: minecraft-rcon
+  passwordKey: password
+  port: 25575
+
+containerPort: 25565
+
+service:
+  type: LoadBalancer
+  port: 25565
+
+persistence:
+  storageClass: ""
+  size: 20Gi
+
+backup:
+  enabled: true
+  image:
+    repository: itzg/mc-backup
+    tag: latest
+    pullPolicy: IfNotPresent
+  env:
+    BACKUP_INTERVAL: 24h
+    PRUNE_BACKUPS_DAYS: "7"
+    BACKUP_METHOD: tar
+    TAR_COMPRESS_METHOD: zstd
+  persistence:
+    storageClass: ""
+    size: 20Gi
+  resources: {}
+
+resources:
+  requests:
+    cpu: 1000m
+    memory: 6Gi
+  limits:
+    memory: 8Gi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]

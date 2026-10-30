@@ -1,6 +1,0 @@
-apiVersion: v2
-name: playit
-description: playit.gg tunnel agent
-type: application
-version: 1.0.0
-appVersion: "1.0"

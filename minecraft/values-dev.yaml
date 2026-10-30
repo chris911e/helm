@@ -1,3 +1,0 @@
-# Dev overrides (merged on top of values.yaml)
-env:
-  MOTD: Minecraft dev

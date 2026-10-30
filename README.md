@@ -50,7 +50,7 @@ Create them in each namespace before syncing:
 
 | Namespace | Secret | Key | Used by |
 | --- | --- | --- | --- |
-| `dev` | `ghcr-pull` | (docker-registry) | portfolio-frontend image pull |
+| `dev` | `ghcr-pull` | (docker-registry) | image pulls |
 | `cloudflared` | `cloudflared-token` | `token` | cloudflared tunnel token |
 
 For example:

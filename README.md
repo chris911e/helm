@@ -10,14 +10,13 @@ Each top-level directory is a standalone chart; `argocd/` holds the Argo CD
 | --- | --- | --- |
 | [`portfolio-frontend`](portfolio-frontend/) | The portfolio site image from `ghcr.io/chris911e/portfolio-frontend` | `dev` |
 | [`cloudflared`](cloudflared/) | Cloudflare Tunnel connector (remotely managed tunnel) | `cloudflared` |
-| [`minecraft`](minecraft/) | Paper Minecraft server (`itzg/minecraft-server`) with a daily backup sidecar | `minecraft` |
-| [`playit`](playit/) | playit.gg tunnel agent on the host network | `minecraft` |
 
 ## Layout
 
 ```
 argocd/
   dev/                 # Argo CD Applications for the dev environment
+  prod/                # Argo CD Applications for prod (empty for now)
 <chart>/
   Chart.yaml
   values.yaml          # base values
@@ -53,8 +52,6 @@ Create them in each namespace before syncing:
 | --- | --- | --- | --- |
 | `dev` | `ghcr-pull` | (docker-registry) | portfolio-frontend image pull |
 | `cloudflared` | `cloudflared-token` | `token` | cloudflared tunnel token |
-| `minecraft` | `minecraft-rcon` | `password` | Minecraft RCON and backups |
-| `minecraft` | `playit-secret` | `secret-key` | playit agent |
 
 For example:
 
@@ -63,17 +60,7 @@ kubectl -n dev create secret docker-registry ghcr-pull \
   --docker-server=ghcr.io --docker-username=<user> --docker-password=<token>
 
 kubectl -n cloudflared create secret generic cloudflared-token --from-literal=token=<token>
-kubectl -n minecraft create secret generic minecraft-rcon --from-literal=password=<password>
-kubectl -n minecraft create secret generic playit-secret --from-literal=secret-key=<key>
 ```
-
-## Notes
-
-- **minecraft** runs a single replica with the `Recreate` strategy, since only
-  one pod may use the world volume. Its PVCs carry `helm.sh/resource-policy: keep`,
-  so the world and backups survive an uninstall.
-- **playit** currently has `replicas: 0` hard-coded in its Deployment, so the
-  agent is turned off. Change it to `1` to bring it back.
 
 ## Rendering locally
 

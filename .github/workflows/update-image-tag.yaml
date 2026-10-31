@@ -1,0 +1,66 @@
+name: update-image-tag
+
+on:
+  repository_dispatch:
+    types: [image-published]
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: Chart directory to update
+        required: true
+      tag:
+        description: Image tag to deploy
+        required: true
+      env:
+        description: Environment (values-<env>.yaml)
+        required: true
+        default: dev
+
+concurrency:
+  group: update-image-tag
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      CHART: ${{ github.event.client_payload.chart || inputs.chart }}
+      TAG: ${{ github.event.client_payload.tag || inputs.tag }}
+      ENV: ${{ github.event.client_payload.env || inputs.env || 'dev' }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Validate input
+      run: |
+        [[ "$CHART" =~ ^[a-z0-9-]+$ ]] || { echo "::error::Invalid chart: $CHART"; exit 1; }
+        [[ "$ENV" =~ ^[a-z0-9-]+$ ]] || { echo "::error::Invalid env: $ENV"; exit 1; }
+        [[ "$TAG" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "::error::Invalid tag: $TAG"; exit 1; }
+
+        VALUES="$CHART/values-$ENV.yaml"
+        [ -f "$VALUES" ] || { echo "::error::$VALUES does not exist"; exit 1; }
+        echo "VALUES=$VALUES" >> "$GITHUB_ENV"
+
+    - name: Set image tag
+      run: |
+        yq -i '.image.tag = strenv(TAG)' "$VALUES"
+        git diff --stat
+
+    - name: Commit and push
+      run: |
+        if git diff --quiet; then
+          echo "$VALUES already uses $TAG, nothing to do"
+          exit 0
+        fi
+
+        git config user.name "github-actions[bot]"
+        git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+        git commit -am "chore: bump $CHART ($ENV) to $TAG"
+
+        # Retry in case main moved while this job was running
+        for i in 1 2 3; do
+          git pull --rebase && git push && exit 0
+          sleep 5
+        done
+        exit 1

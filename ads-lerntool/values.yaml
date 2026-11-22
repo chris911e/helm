@@ -1,0 +1,31 @@
+image:
+  repository: ghcr.io/chris911e/ads-lerntool
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ghcr-pull
+
+persistence:
+  size: 256Mi
+  storageClass: ""
+  accessMode: ReadWriteOnce
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 48Mi
+  limits:
+    memory: 192Mi
+
+service:
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: lerntool.example.home
+  annotations: {}
+  tls:
+    enabled: true
+    secretName: ads-lerntool-tls

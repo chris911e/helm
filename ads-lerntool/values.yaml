@@ -20,12 +20,3 @@ resources:
 
 service:
   port: 80
-
-ingress:
-  enabled: true
-  className: "nginx"
-  host: lerntool.example.home
-  annotations: {}
-  tls:
-    enabled: true
-    secretName: ads-lerntool-tls

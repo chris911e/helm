@@ -19,4 +19,6 @@ resources:
     memory: 192Mi
 
 service:
+  type: NodePort
   port: 80
+  nodePort: 30067
